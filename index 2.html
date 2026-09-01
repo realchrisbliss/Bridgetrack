@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BridgeTrack — Flight Tracking</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f8fc;
+  color: #122033;
+}
+
+header {
+  background: #ffffff;
+  border-bottom: 1px solid #e3eaf2;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav {
+  max-width: 1100px;
+  margin: auto;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: #123b68;
+}
+
+nav a {
+  margin-left: 22px;
+  text-decoration: none;
+  color: #425466;
+  font-weight: 600;
+}
+
+.hero {
+  background: linear-gradient(135deg, #0d3b66, #1b659e);
+  color: #ffffff;
+  padding: 70px 20px;
+}
+
+.hero-inner {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.hero h1 {
+  font-size: 46px;
+  margin: 0 0 14px;
+}
+
+.hero p {
+  font-size: 18px;
+  max-width: 650px;
+  line-height: 1.6;
+}
+
+.track-card {
+  background: #ffffff;
+  color: #122033;
+  max-width: 850px;
+  margin: 30px auto 0;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.16);
+}
+
+.card-title {
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.card-sub {
+  margin: 8px 0 18px;
+  color: #657487;
+}
+
+.search {
+  display: flex;
+  gap: 10px;
+}
+
+.search input {
+  flex: 1;
+  padding: 15px;
+  border: 1px solid #cbd6e2;
+  border-radius: 9px;
+  font-size: 16px;
+}
+
+.search button {
+  padding: 15px 25px;
+  border: 0;
+  border-radius: 9px;
+  background: #1677d2;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.quick {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #68788a;
+}
+
+section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.results {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 8px 25px rgba(20,50,80,.08);
+}
+
+.result-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+}
+
+.status {
+  color: #168447;
+  font-weight: 800;
+}
+
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #20a35a;
+  margin-right: 5px;
+}
+
+.ref {
+  font-size: 14px;
+  color: #667789;
+  text-align: right;
+  line-height: 1.7;
+}
+
+.route {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  margin: 38px 0;
+}
+
+.airport {
+  text-align: center;
+}
+
+.code {
+  font-size: 42px;
+  font-weight: 900;
+  color: #123b68;
+}
+
+.city {
+  color: #617285;
+  margin-top: 5px;
+}
+
+.route-line {
+  text-align: center;
+  border-top: 2px solid #d8e2ec;
+  position: relative;
+}
+
+.plane {
+  position: relative;
+  top: -17px;
+  font-size: 28px;
+}
+
+.via {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #718194;
+  margin-top: -7px;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  border-top: 1px solid #e5ebf1;
+  padding-top: 22px;
+}
+
+.label {
+  font-size: 12px;
+  color: #7a8999;
+  margin-bottom: 6px;
+}
+
+.value {
+  font-weight: 700;
+}
+
+.notice {
+  margin-top: 14px;
+  background: #edf5fc;
+  padding: 16px;
+  border-radius: 10px;
+  color: #4d6277;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.box {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(20,50,80,.06);
+}
+
+.box h3 {
+  margin-top: 0;
+}
+
+footer {
+  background: #102b46;
+  color: #dbe7f2;
+  text-align: center;
+  padding: 30px 20px;
+}
+
+@media(max-width:800px) {
+  .details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .route {
+    grid-template-columns: 1fr;
+    margin: 25px 0;
+  }
+
+  .route-line {
+    margin: 20px 0;
+  }
+
+  .result-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ref {
+    text-align: left;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+}
+
+@media(max-width:560px) {
+  .search {
+    flex-direction: column;
+  }
+
+  .search button {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">BridgeTrack</div>
+
+    <nav>
+      <a href="#track">Track</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+
+    <h1>Track your journey</h1>
+
+    <p>
+      Check your flight information using your booking reference or tracking number.
+    </p>
+
+    <div class="track-card">
+
+      <div class="card-title">
+        Track your journey
+      </div>
+
+      <div class="card-sub">
+        Enter your booking reference or tracking number.
+      </div>
+
+      <div class="search">
+
+        <input
+          id="refInput"
+          value="BT-MUC-HAM"
+          placeholder="Reference / tracking number"
+        >
+
+        <button onclick="trackFlight()">
+          Track
+        </button>
+
+      </div>
+
+      <div class="quick">
+        Reference: <b>BT-MUC-HAM</b>
+        · Tracking: <b>BT20260902MUC7842</b>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<section id="track">
+
+  <div class="results" id="result">
+
+    <div class="result-top">
+
+      <div class="status">
+        <span class="dot"></span> Scheduled
+      </div>
+
+      <div class="ref">
+
+        Reference:
+        <b id="resultReference">BT-MUC-HAM</b>
+
+        <br>
+
+        Tracking:
+        <b id="resultTracking">BT20260902MUC7842</b>
+
+      </div>
+
+    </div>
+
+
+    <div class="route">
+
+      <div class="airport">
+
+        <div class="code">
+          MUC
+        </div>
+
+        <div class="city">
+          Munich, Germany
+        </div>
+
+      </div>
+
+
+      <div class="route-line">
+
+        <div class="plane">
+          ✈
+        </div>
+
+        <span class="via">
+          VIA FRANKFURT
+        </span>
+
+      </div>
+
+
+      <div class="airport">
+
+        <div class="code">
+          HAM
+        </div>
+
+        <div class="city">
+          Hamburg, Germany
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="details">
+
+      <div class="detail">
+        <div class="label">
+          Departure
+        </div>
+
+        <div class="value">
+          02 Sep 2026
+        </div>
+      </div>
+
+
+      <div class="detail">
+        <div class="label">
+          Arrival
+        </div>
+
+        <div class="value">
+          02 Sep 2026
+        </div>
+      </div>
+
+
+      <div class="detail">
+        <div class="label">
+          Flight class
+        </div>
+
+        <div class="value">
+          Business Class
+        </div>
+      </div>
+
+
+      <div class="detail">
+        <div class="label">
+          Passenger
+        </div>
+
+        <div class="value">
+          Steven Muller
+        </div>
+      </div>
+
+
+      <div class="detail">
+        <div class="label">
+          Tracking number
+        </div>
+
+        <div class="value">
+          BT20260902MUC7842
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="notice">
+
+    Transit: Frankfurt · Route:
+    Munich (MUC) → Frankfurt → Hamburg (HAM)
+
+  </div>
+
+</section>
+
+
+<section id="services">
+
+  <h2>Our Services</h2>
+
+  <div class="grid">
+
+    <div class="box">
+      <h3>Flight Tracking</h3>
+      <p>
+        Search flight records using a booking reference or tracking number.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>Journey Information</h3>
+      <p>
+        View departure, arrival, transit and passenger details.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>Travel Support</h3>
+      <p>
+        Get assistance with journey-related information and enquiries.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<section id="about">
+
+  <h2>About BridgeTrack</h2>
+
+  <p>
+    BridgeTrack provides a simple interface for accessing stored journey
+    and flight information from a single tracking reference.
+  </p>
+
+</section>
+
+
+<section id="contact">
+
+  <h2>Contact</h2>
+
+  <form onsubmit="sendMessage(event)">
+
+    <input
+      required
+      placeholder="Your name"
+      style="width:100%;padding:14px;margin:7px 0;border:1px solid #ccd7e2;border-radius:8px"
+    >
+
+    <input
+      required
+      type="email"
+      placeholder="Your email"
+      style="width:100%;padding:14px;margin:7px 0;border:1px solid #ccd7e2;border-radius:8px"
+    >
+
+    <textarea
+      required
+      placeholder="Your message"
+      rows="5"
+      style="width:100%;padding:14px;margin:7px 0;border:1px solid #ccd7e2;border-radius:8px"
+    ></textarea>
+
+    <button
+      type="submit"
+      style="padding:14px 22px;border:0;border-radius:8px;background:#1677d2;color:#fff;font-weight:700"
+    >
+      Send Message
+    </button>
+
+  </form>
+
+</section>
+
+
+<footer>
+  © 2026 BridgeTrack. All rights reserved.
+</footer>
+
+
+<script>
+
+const flightRecords = {
+
+  "BT-MUC-HAM": {
+
+    status: "Scheduled",
+
+    reference: "BT-MUC-HAM",
+
+    trackingNumber: "BT20260902MUC7842",
+
+    fromCode: "MUC",
+
+    fromCity: "Munich, Germany",
+
+    toCode: "HAM",
+
+    toCity: "Hamburg, Germany",
+
+    transit: "Frankfurt",
+
+    departure: "02 Sep 2026",
+
+    arrival: "02 Sep 2026",
+
+    flightClass: "Business Class",
+
+    passenger: "Steven Muller"
+
+  },
+
+
+  "BT20260902MUC7842": {
+
+    status: "Scheduled",
+
+    reference: "BT-MUC-HAM",
+
+    trackingNumber: "BT20260902MUC7842",
+
+    fromCode: "MUC",
+
+    fromCity: "Munich, Germany",
+
+    toCode: "HAM",
+
+    toCity: "Hamburg, Germany",
+
+    transit: "Frankfurt",
+
+    departure: "02 Sep 2026",
+
+    arrival: "02 Sep 2026",
+
+    flightClass: "Business Class",
+
+    passenger: "Steven Muller"
+
+  }
+
+};
+
+
+function trackFlight() {
+
+  const input = document.getElementById("refInput");
+
+  const reference = input.value.trim().toUpperCase();
+
+
+  if (!reference) {
+
+    alert(
+      "Please enter a booking reference or tracking number."
+    );
+
+    return;
+
+  }
+
+
+  const flight = flightRecords[reference];
+
+
+  if (!flight) {
+
+    alert(
+      "Tracking record not found. Please check the reference or tracking number and try again."
+    );
+
+    return;
+
+  }
+
+
+  document.querySelector("#result .status").innerHTML =
+    '<span class="dot"></span> ' + flight.status;
+
+
+  document.getElementById("resultReference").textContent =
+    flight.reference;
+
+
+  document.getElementById("resultTracking").textContent =
+    flight.trackingNumber;
+
+
+  const airports =
+    document.querySelectorAll("#result .airport");
+
+
+  airports[0].querySelector(".code").textContent =
+    flight.fromCode;
+
+
+  airports[0].querySelector(".city").textContent =
+    flight.fromCity;
+
+
+  airports[1].querySelector(".code").textContent =
+    flight.toCode;
+
+
+  airports[1].querySelector(".city").textContent =
+    flight.toCity;
+
+
+  document.querySelector(".via").textContent =
+    "VIA " + flight.transit.toUpperCase();
+
+
+  const details =
+    document.querySelectorAll("#result .detail .value");
+
+
+  details[0].textContent =
+    flight.departure;
+
+
+  details[1].textContent =
+    flight.arrival;
+
+
+  details[2].textContent =
+    flight.flightClass;
+
+
+  details[3].textContent =
+    flight.passenger;
+
+
+  details[4].textContent =
+    flight.trackingNumber;
+
+
+  document.querySelector(".notice").textContent =
+    "Transit: " +
+    flight.transit +
+    " · Route: " +
+    flight.fromCity +
+    " → " +
+    flight.transit +
+    " → " +
+    flight.toCity;
+
+
+  document.getElementById("track").scrollIntoView({
+    behavior: "smooth"
+  });
+
+}
+
+
+document.getElementById("refInput").addEventListener(
+  "keydown",
+  function(event) {
+
+    if (event.key === "Enter") {
+
+      trackFlight();
+
+    }
+
+  }
+);
+
+
+function sendMessage(e) {
+
+  e.preventDefault();
+
+  alert(
+    "Thank you. Your message form is ready to be connected to a live email service."
+  );
+
+}
+
+</script>
+
+</body>
+</html>
